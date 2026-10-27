@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PatchLens AI - Code Review &amp; Debugging Studio</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">PatchLens AI <span class="brand-sub">Code Review &amp; Debugging Studio</span></div>
+  <nav class="nav" aria-label="Workspace">
+    <button type="button" class="nav-btn is-active" data-view="workbench" aria-current="page">Workbench</button>
+    <button type="button" class="nav-btn" data-view="history">History</button>
+  </nav>
+  <div class="topbar-meta">
+    <span class="meta-item">Language <strong id="top-language">Python</strong></span>
+    <span class="status" id="api-status" role="status"><span class="dot"></span><span id="api-status-text">Checking API</span></span>
+  </div>
+</header>
+<main>
+<div id="view-workbench" class="workbench">
+  <section class="pane code-pane" aria-labelledby="code-h">
+    <div class="pane-head">
+      <h2 id="code-h">Code</h2>
+      <div class="field-inline">
+        <label for="language">Language</label>
+        <select id="language">{% for l in languages %}<option>{{ l }}</option>{% endfor %}</select>
+      </div>
+    </div>
+    <label class="sr-only" for="code">Code to review</label>
+    <textarea id="code" class="editor" spellcheck="false" wrap="off" maxlength="{{ max_code }}"
+      placeholder="Paste the code you want reviewed.&#10;&#10;def average(values):&#10;    return sum(values) / len(values)"></textarea>
+    <div class="counter"><span id="code-count">0</span> / {{ '{:,}'.format(max_code) }} characters</div>
+    <label class="field-label" for="error">Error message or traceback <span class="optional">optional</span></label>
+    <textarea id="error" class="editor error-input" spellcheck="false" wrap="off" maxlength="8000"
+      placeholder="Paste the error here to get a root-cause analysis, e.g. ZeroDivisionError: division by zero"></textarea>
+    <div class="actions">
+      <button type="button" id="btn-review" class="btn primary">Review code</button>
+      <button type="button" id="btn-debug" class="btn">Debug error</button>
+      <button type="button" id="btn-local" class="btn quiet">Check syntax locally</button>
+      <button type="button" id="btn-clear" class="btn quiet">Clear</button>
+    </div>
+    <p id="notice" class="notice" role="status" hidden></p>
+  </section>
+  <section class="pane review-pane" aria-labelledby="review-h">
+    <div class="pane-head">
+      <h2 id="review-h">Review</h2>
+      <a id="btn-export" class="btn small" href="#" hidden>Export Markdown</a>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Review sections">
+      <button type="button" role="tab" class="tab is-active" data-tab="findings" aria-selected="true">Findings <span class="badge" id="count-findings"></span></button>
+      <button type="button" role="tab" class="tab" data-tab="debug" aria-selected="false">Debug</button>
+      <button type="button" role="tab" class="tab" data-tab="improved" aria-selected="false">Improved version</button>
+      <button type="button" role="tab" class="tab" data-tab="tests" aria-selected="false">Tests</button>
+    </div>
+    <div id="results" class="results" role="tabpanel" aria-live="polite">
+      <p class="empty">No review yet. Paste code on the left and choose Review code.</p>
+    </div>
+  </section>
+</div>
+<section id="view-history" class="history" hidden aria-labelledby="hist-h">
+  <div class="pane-head"><h2 id="hist-h">Saved reviews</h2></div>
+  <div id="history-list"></div>
+</section>
+</main>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
